@@ -1,0 +1,265 @@
+<div class="cli-card fit-card">
+  <div class="cli-card-body">
+    <div class="modal-title c-male">Registro de Liquidaciones</div>
+    <div>
+      <!-- BUSCADOR POR FILTRO ---------------------------------------------------------------->
+      <form [formGroup]="liquidacionForm">
+        <div class="card" style="border-radius: 2px; font-weight: 600">
+          <div class="row g-3 card-body" style="padding: 10px">
+
+            <div class="col-sm-3 cli-form-element">
+              <label class="form-label">ID Liquidación</label>
+              <input
+                type="texto"
+                class="form-control"
+                formControlName="idFactura"/>
+            </div>
+            <div class="col-sm-3 cli-form-element">
+              <label class="form-label">Gestor</label>
+              <select class="form-select" formControlName="gestorNombre">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="g.nombre_apellido" *ngFor="let g of listGestores">{{g.nombre_apellido}}</option>
+              </select>
+            </div>
+
+            <div class="col-sm-3 cli-form-element">
+              <label class="form-label">Proyecto</label>
+              <select class="form-select" formControlName="proyecto">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="proy.nombre" *ngFor="let proy of listProyectos">{{proy.nombre}}</option>
+              </select>
+            </div>
+
+            <div class="col-sm-3 cli-form-element">
+              <label class="form-label">Estado</label>
+              <select class="form-select" formControlName="estadoLiquidacion">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="est.nombre" *ngFor="let est of listEstados">{{est.nombre}}</option>
+              </select>
+            </div>
+
+            <div class="col-sm-3 cli-form-element">
+              <label class="form-label">Importe</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="importe"/>
+            </div>
+
+            <div class="col-sm-3 cli-form-element">
+              <div class="form-group">
+                <label>Fecha Periodo</label>
+                 <input
+                  type="month"
+                  class="form-control cli-input-white"
+                  formControlName="periodo"/>
+              </div>
+            </div>
+
+            <!-- <div class="col-sm-3 cli-form-element" style="margin-top: 45px">
+              <div class="form-group">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input"
+                         type="checkbox"
+                         id="inlineCheckbox1"
+                         formControlName="periodoActual">
+                  <label class="form-check-label" for="inlineCheckbox1">Periodo actual</label>
+                </div>
+              </div>
+            </div> -->
+
+            <div class="cli-form-buttons" style="margin-top: 8px">
+              <button
+                type="submit"
+                class="cli-btn btn-m btn-cancel"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="limpiarFiltro()"
+                ><mat-icon class="icon-18">rotate_left</mat-icon>
+                Limpiar
+              </button>
+
+              <button
+                type="button"
+                class="cli-btn btn-blue-light"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="getAllLiquidaciones()"
+                ><mat-icon class="icon-18">search</mat-icon>
+                Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTON MODAL PARA CREAR LIQUIDACION ----------------------------------------------------->
+        <div style="display: flex" class="mt-4 mb-1">
+          <button
+            class="btn-crear btn-blue"
+            style="margin: 0"
+            type="button"
+            (click)="crearLiquidacion()"
+            ><mat-icon class="icon-18">add</mat-icon>Crear liquidación
+          </button>
+
+          <!-- <button
+            class="cli-btn-liq btn-cancel mx-1"
+            (click)="actualizacionMasiva()"
+            ><mat-icon class="icon-18">edit_note</mat-icon>Act. masiva
+          </button> -->
+
+          <!-- Ver ngModel -->
+          <!-- <input type="file" class="cli-import"
+              accept=".xlsx, .xls, .csv"
+              formControlName="import"
+              (change)="readExcell($event)"> -->
+
+          <div class="flex-1"></div>
+          <div class="mt-2" style="color: #345df3; font-weight: 600;">
+            Total : <span class="total">{{ listaLiquidacion.length }} Liquidaciones</span>
+          </div>
+        </div>
+      </form>
+
+
+      <!-- TABLA DEL FACTURAS ------------------------------------------------------------------>
+      <div style="overflow: auto; min-height: 540px; color:#6c757d;">
+        <table class="cli-table stripedtable underlinedtable">
+          <thead>
+            <tr class="bgc-blue-light c-white">
+              <th class="w50">Acción</th>
+              <th style="min-width: 72px;">ID Liquid</th>
+              <th class="w100">Periodo</th>
+              <th style="min-width: 240px;">Gestor</th>
+              <th>Proyecto</th>
+              <th style="min-width: 115px;">Tipo Liq.</th>
+              <th style="min-width: 65px;" >Validar</th>
+              <th style="min-width: 280px;">Subservicio</th>
+              <th style="min-width: 92px;" >Estado</th>
+              <th>
+                <div class="cli-table-user">
+                  <button matTooltip="Exportar filtro"
+                    class="icon-btn btn-trans c-white"
+                    (click)="exportarRegistro()"
+                    ><mat-icon class="icon-16">downloading</mat-icon>
+                  </button>Importe
+                </div>
+              </th>
+              <th style="background: #dee2e6;color: #676767;">
+                <div class="cli-table-user">
+                  <button matTooltip="Exportar venta declarada"
+                    class="icon-btn btn-trans c-indigo"
+                    (click)="exportarVD_FACT()"
+                    ><mat-icon class="icon-16">file_download</mat-icon>
+                  </button>Declarado
+                </div>
+              </th>
+              <th style="background: #dee2e6;color: #676767;">Facturado</th>
+              <th style="background: #dee2e6;color: #676767;">Pendiente</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let liq of listaLiquidacion | paginate:
+                      { itemsPerPage: pageSize,
+                        currentPage : page,
+                        totalItems  : totalFacturas
+                      } ">
+              <td>
+                <div class="cli-table-actions">
+                  <button
+                    matTooltip="Actualizar"
+                    class="icon-btn btn-trans c-blue"
+                    (click)="actualizarLiquidacion(liq)"
+                    ><mat-icon class="icon-13">edit</mat-icon>
+                  </button>
+                  <button
+                    matTooltip="Eliminar"
+                    class="icon-btn btn-trans c-fucsia"
+                    (click)="eliminarLiquidacion(liq.idFactura)"
+                    ><mat-icon class="icon-13">delete_forever</mat-icon>
+                  </button>
+                  <!-- <button
+                    matTooltip="Duplicar"
+                    class="icon-btn btn-trans c-green"
+                    (click)="duplicarLiquidacion(liq)"
+                    ><mat-icon class="icon-13">file_copy</mat-icon>
+                  </button> -->
+                </div>
+              </td>
+              <td style="font-weight: 600;">{{ liq.id_Liquidacion }}</td>
+              <td>{{ liq.periodo | date:"yyyy/MM" }}</td>
+              <td style="text-align: left">{{ liq.gestor }}</td>
+
+              <td style="text-align:left ">
+                <div class="cli-table-user">
+                  <!-- OJO FALTA EL LIDER *****************+ -->
+                  <button
+                    matTooltip={{liq.lider}}
+                    class="icon-btn btn-trans"
+                    style="color: #ffaaa4;"
+                    ><mat-icon class="icon-13">person_outline</mat-icon>
+                  </button>{{liq.proyecto | uppercase}}
+                </div>
+              </td>
+              <td>
+                <span *ngIf="liq.tipoLiquidacion == 'Acta'" style="color:#498ff6">{{ liq.tipoLiquidacion | uppercase }}</span>
+                <div class="cli-table-user">
+                  <button *ngIf="liq.tipoLiquidacion == 'Regularización'"
+                    matTooltip="Ver comentario"
+                    class="icon-btn btn-trans c-grey"
+                    (click)="abrirComentarioRegularizacion(liq.idFactura)"
+                    ><mat-icon class="icon-10">visibility</mat-icon>
+                  </button><span *ngIf="liq.tipoLiquidacion == 'Regularización'" style="color:#00d4ff">  {{ liq.tipoLiquidacion | uppercase }}</span>
+                </div>
+                <span *ngIf="liq.tipoLiquidacion == 'Pago Adelantado'"style="color:deeppink">{{ liq.tipoLiquidacion | uppercase }}</span>
+              </td>
+              <td>
+                <!-- <div *ngIf="liq.regularProy == 'Válido'"  ><mat-icon class="icon-13 icon-btn" style="color: #00ffb6">check</mat-icon></div>
+                <div *ngIf="liq.regularProy == 'Inválido'"><mat-icon class="icon-13 icon-btn" style="color: #f66b9a">close</mat-icon></div> -->
+              </td>
+              <td style="text-align: left; height: 33px;">{{ liq.subServicio }}</td>
+              <td>
+                <span *ngIf="liq.estado == 'Aprobado'"      class="label ">    {{ liq.estado | uppercase }}</span>
+                <span *ngIf="liq.estado == 'Cancelado'"     class="label ">    {{ liq.estado | uppercase }}</span>
+                <span *ngIf="liq.estado == 'En Elaboración'"class="label ">    {{ liq.estado | uppercase }}</span>
+                <span *ngIf="liq.estado == 'Enviado'"       class="label ">    {{ liq.estado | uppercase }}</span>
+                <span *ngIf="liq.estado == 'Facturado'"     class="label est-facturado">{{ liq.estado | uppercase }}</span>
+                <span *ngIf="liq.estado == 'MO Cargado'"    class="label est-cargado">  {{ liq.estado | uppercase }}</span>
+                <span *ngIf="liq.estado == 'MO_Visado'"     class="label est-visado">   {{ liq.estado | uppercase }}</span>
+              </td>
+              <td style="font-weight: 600; text-align: end;"><small class="icon-soles">S/</small>{{ liq.importe | number : '1.0-2'}}</td>
+              <td style="text-align: end; border-left-width: thin;"><small *ngIf="liq.declarado >0" class="icon-soles">S/</small>{{ liq.declarado | number : '1.0-2' }}</td>
+              <td style="text-align: end;"><small *ngIf="liq.facturado >0" class="icon-soles">S/</small>{{ liq.facturado | number : '1.0-2' }}</td>
+              <td style="text-align: end; border-right-width: thin; color: #f26897" >
+                <ng-container>
+                  <small class="icon-soles">S/</small>{{ (liq.declarado - liq.facturado) | number : '1.0-2' }}
+                </ng-container>
+              </td>
+              <!-- <td style="text-align: end;"><small style="font-weight: 400; margin-right:3px;">S/</small>{{ (factura.saldo? factura.saldo: factura.importe) | number : '1.0-2' }}</td> -->
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="cli-loader" *ngIf="loadingItem">
+          <mat-spinner style="margin-right: 20px" diameter="20"></mat-spinner>
+          cargando...
+        </div>
+
+        <div
+          *ngIf="!loadingItem && listaLiquidacion.length == 0"
+          class="cli-loader mt-5"
+          style="color: #f83434"
+          >No hay liquidaciones para mostrar
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer pb-0 pt-3">
+      <pagination-controls
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        [responsive]="false"
+        (pageChange)="cambiarPagina($event)">
+      </pagination-controls>
+    </div>
+  </div>
+</div>

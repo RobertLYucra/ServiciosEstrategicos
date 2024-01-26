@@ -1,0 +1,98 @@
+<div class="cli-modalclose">
+  <mat-icon class="icon-20" matTooltip="Cerrar" (click)="dialogRef.close()">close</mat-icon>
+</div>
+
+<div class="cli-form mt-3">
+  <div class="cli-form-title c-male" style="margin-bottom: 20px">{{ DATA_SUBSERV ? "Actualizar" : "Crear" }} subservicio</div>
+
+  <form class="row g-3" [formGroup]="subservicioForm">
+    <div class="cli-form newvac-wrapper">
+      <div class="row g-3">
+
+        <div class="cli-form-element col-f-3">
+          <label>Subservicio <small style="color: red">*</small></label>
+          <input
+            class="cli-input"
+            formControlName="subservicio"
+            type="text"/>
+            <small class="form-text text-alert" *ngIf="campoNoValido('subservicio')">* Ingrese el Subservicio es obligatorio</small>
+        </div>
+
+        <div class="cli-form-element col-f-3">
+          <label>Representante</label>
+          <input
+            class="cli-input"
+            formControlName="representante"
+            type="text"/>
+            <!-- <small class="form-text text-alert" *ngIf="campoNoValido('representante')">* Ingrese el Representate es obligatorio</small> -->
+        </div>
+
+        <div class="cli-form-element col-f-3">
+          <label>Proyecto <small style="color: red">*</small></label>
+          <select formControlName="proyecto" class="cli-input">
+            <option [value]="0" disabled>-Seleccione-</option>
+            <option [value]="proy.idProyecto" *ngFor="let proy of listProyectos">{{proy.codigoProyecto}}</option>
+          </select>
+          <small class="form-text text-alert" *ngIf="campoNoValido('proyecto')">* Seleccione el proyecto es obligatorio</small>
+        </div>
+
+        <div class="cli-form-element col-f-3">
+          <div class="form-group">
+            <label>Fecha inicio</label>
+             <input
+              style="padding: 0.05rem .75rem;"
+              type="date"
+              class="form-control"
+              formControlName="fecha_ini"/>
+            <small class="form-text text-alert" *ngIf="campoNoValido('fecha_ini')">* Ingrese la fecha inicio es obligatorio</small>
+          </div>
+        </div>
+
+        <div class="cli-form-element col-f-3">
+          <div class="form-group">
+            <label>Fecha fin</label>
+             <input
+              style="padding: 0.05rem .75rem;"
+              type="date"
+              class="form-control"
+              formControlName="fecha_fin"/>
+          </div>
+        </div>
+
+        <ng-container *ngIf="DATA_SUBSERV">
+          <div class="cli-form-element col-f-3" *ngIf="DATA_SUBSERV">
+            <label>Estado</label>
+            <select formControlName="id_estado" class="cli-input">
+              <option [value]="10" disabled>-Seleccione-</option>
+              <option value="1">Activo</option>
+              <option value="0">Inactivo</option>
+            </select>
+          </div>
+
+          <div class="cli-form-element form-group col-f-3">
+              <label>Fecha creación</label>
+               <input
+                style="padding: 0.05rem .75rem;"
+                type="date"
+                class="form-control"
+                formControlName="fecha_creacion"/>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="cli-form-buttons" style="margin-top: 8%">
+        <button class="cli-btn btn-m btn-regresar"
+                type="submit" (click)="close()">
+                <mat-icon class="icon-18">cancel</mat-icon> Cancelar
+        </button>
+
+        <button class="cli-btn btn-m btn-turq"
+                [disabled]="subservicioForm.invalid"
+                (click)="crearOactualizarSubservicio()"
+                ><mat-icon class="icon-18">save</mat-icon> {{actionBtn}}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+

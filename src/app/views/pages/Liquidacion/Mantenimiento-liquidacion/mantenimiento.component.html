@@ -1,0 +1,90 @@
+<div class="cli-card cli-shadow-1 fit-card">
+  <div class="cli-card-body">
+    <div class="cli-title" style="margin-bottom: 30px; font-weight: 700; color: #0daef4;">Gestión de Mantenimiento Actas</div>
+
+    <!-- <app-usuarios-list></app-usuarios-list> -->
+    <div class="d-flex flex-column options col-12">
+      <div class="d-flex flex-row justify-content-left align-items-stretch flex-wrap">
+
+        <div class="col-12 col-md-4 col-lg-4 col-sm-12">
+          <a class="option-module p-2" (click)="abrirModalGestor()">
+            <div class="d-flex flex-row" style="justify-content: center">
+              <div class="d-flex flex-column ml-2 option-module-title">
+                <div style="display: flex; align-items: center;">
+                  <mat-icon class="icon-50">manage_accounts</mat-icon><label style="font-size: 20px; font-weight: 700;">Gestor</label>
+                </div>
+                <span class="description-module">Lista de Gestores relacionado con las Actas</span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-4 col-sm-12">
+          <a class="option-module p-2" (click)="abrirListaSubservicio()">
+            <div class="d-flex flex-row" style="justify-content: center">
+              <div class="d-flex flex-column ml-2 option-module-title">
+                <div style="display: flex; align-items: center;">
+                  <mat-icon class="icon-50">auto_mode</mat-icon><label style="font-size: 20px; font-weight: 700;">Subservicio</label>
+                </div>
+                <span class="description-module">Lista de Subservicios relacionado con las Actas</span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-4 col-sm-12">
+          <a class="option-module p-2" (click)="abrirListaFacturas()">
+            <div class="d-flex flex-row" style="justify-content: center">
+              <div class="d-flex flex-column ml-2 option-module-title">
+                <div style="display: flex; align-items: center;">
+                  <mat-icon class="icon-50">move_up</mat-icon><label style="font-size: 20px; font-weight: 700;">Factura</label>
+                </div>
+                <span class="description-module">Lista de Facturas relacionado con las Actas</span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-4 col-sm-12">
+          <a class="option-module p-2" (click)="abrirListaOrdecompra()">
+            <div class="d-flex flex-row" style="justify-content: center">
+              <div class="d-flex flex-column ml-2 option-module-title">
+                <div style="display: flex; align-items: center;">
+                  <mat-icon class="icon-50">token</mat-icon><label style="font-size: 20px; font-weight: 700;">Orden de Compra</label>
+                </div>
+                <span class="description-module">Lista de órdenes de compra relacionado con las Actas</span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-4 col-sm-12">
+          <a class="option-module p-2" (click)="abrirListaCertificaciones()">
+            <div class="d-flex flex-row" style="justify-content: center">
+              <div class="d-flex flex-column ml-2 option-module-title">
+                <div style="display: flex; align-items: center;">
+                  <mat-icon class="icon-50">hive</mat-icon><label style="font-size: 20px; font-weight: 700;">Certificaciones</label>
+                </div>
+                <span class="description-module">Lista de certificaciones de compra relacionado con las Actas</span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-4 col-sm-12">
+          <a class="option-module p-2" (click)="abrirListaEstados()">
+            <div class="d-flex flex-row" style="justify-content: center">
+              <div class="d-flex flex-column ml-2 option-module-title">
+                <div style="display: flex; align-items: center;">
+                  <mat-icon class="icon-50">device_hub</mat-icon><label style="font-size: 20px; font-weight: 700;">Estados Actas</label>
+                </div>
+                <span class="description-module">Lista de estados de compra relacionado con las Actas</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

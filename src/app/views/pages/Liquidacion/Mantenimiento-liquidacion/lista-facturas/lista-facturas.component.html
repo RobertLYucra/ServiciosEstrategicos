@@ -1,0 +1,169 @@
+<div class="cli-modalclose mt-2">
+  <mat-icon class="icon-20" matTooltip="Cerrar" (click)="dialogRef.close()">close</mat-icon>
+</div>
+
+<div class="cli-card fit-card">
+  <div class="cli-card-body">
+    <div class="modal-title c-male">Registro de facturas</div>
+    <div>
+      <!-- BUSCADOR POR FILTRO ---------------------------------------------------------------->
+      <form [formGroup]="facturaForm">
+        <div class="card" style="border-radius: 2px">
+          <div class="row g-3 card-body" style="padding: 10px">
+            <div class="cli-form-element col-f-4">
+              <label>N° Factura</label>
+              <input
+                class="cli-input"
+                formControlName="nro_factura"
+                type="text"/>
+            </div>
+
+            <div class="cli-form-element col-f-4">
+              <label>Orden de compra</label>
+              <select formControlName="ordenCompra" class="cli-input">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="oc.id" *ngFor="let oc of listOrdenCompraCombo">{{oc.nombre}}</option>
+              </select>
+            </div>
+
+            <div class="cli-form-element col-f-4">
+              <label>Certificación</label>
+              <select formControlName="certificacion" class="cli-input">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="proy.nro_certificacion" *ngFor="let proy of listCertificaciones">{{proy.nro_certificacion}}</option>
+              </select>
+            </div>
+
+            <div class="cli-form-element col-f-4">
+              <label>Estado</label>
+              <select formControlName="idEstado" class="cli-input">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="est.idEstado" *ngFor="let est of listEstadoFacturas">{{est.nombre}}</option>
+              </select>
+            </div>
+
+            <div class="cli-form-buttons" style="margin-top: 8px">
+              <button
+                type="submit"
+                class="cli-btn btn-m btn-regresar"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="limpiarFiltro()">
+                <mat-icon class="icon-18">rotate_left</mat-icon>Limpiar
+              </button>
+
+              <button
+                type="button"
+                class="cli-btn btn-blue-light"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="getAllFacturasFiltro()"
+                ><mat-icon class="icon-18">search</mat-icon>
+                Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTON MODAL PARA CREAR fACTURA ----------------------------------------------------->
+        <div style="display: flex" class="mt-4 mb-1">
+          <button
+            class="cli-btn btn-turq"
+            [disabled]="facturaForm.invalid"
+            (click)="abrirModalCrearOactualizar()">
+            <mat-icon class="icon-18">add</mat-icon> Crear factura
+          </button>
+
+          <div class="flex-1"></div>
+          <div class="mt-2" style="color: #345df3; font-weight: 600">
+            Total : <span class="total">{{ listFacturas.length }} Facturas</span>
+          </div>
+        </div>
+      </form>
+
+      <!-- TABLA DE FACTURAS ------------------------------------------------------------------>
+      <div style="overflow: auto; min-height: 188px; color: #6c757d">
+        <table class="cli-table stripedtable underlinedtable">
+          <thead>
+            <tr class="bgc-blue-light c-white">
+              <th>Acción</th>
+              <th style="min-width: 100px; text-align: left;">N° Factura</th>
+              <th style="min-width: 100px; text-align: left;">Proyecto</th>
+              <th style="min-width: 100px; text-align: left;">Certificación</th>
+              <th style="min-width: 120px">Fecha facturación</th>
+              <th>Total</th>
+              <th>Tgs</th>
+              <th>Adquira</th>
+              <th style="min-width: 150px" >Factrura TGS</th>
+              <th style="min-width: 150px" >Factura Adquira</th>
+              <th style="min-width: 95px;" >Estado</th>
+              <th style="min-width: 108px" >Actualizado por</th>
+              <th style="min-width: 100px;">Fecha creación</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let factura of listFacturas | paginate: {
+                        itemsPerPage: pageSize,
+                        currentPage: page,
+                        totalItems: totalFacturas }">
+              <td>
+                <div class="moad-actions">
+                  <button
+                    matTooltip="Editar factura"
+                    (click)="abrirModalCrearOactualizar(factura)"
+                    class="icon-btn btn-trans c-yellow"
+                    ><mat-icon class="icon-15">drive_file_rename_outline</mat-icon>
+                  </button>
+
+                  <button
+                    matTooltip="Eliminar factura"
+                    (click)="eliminarFactura(factura)"
+                    class="icon-btn btn-trans c-red">
+                    <mat-icon class="icon-15">delete_forever</mat-icon>
+                  </button>
+                </div>
+              </td>
+              <td style="text-align: left"> {{ factura.nro_factura       }}</td>
+              <td style="text-align: left;">{{ factura.proyecto          }}</td>
+              <td style="text-align: left;">{{ factura.certificacion.certificacion }}</td>
+              <td style="min-width: 150px;">{{ factura.fecha_facturacion }}</td>
+              <td>{{ factura.total   }}</td>
+              <td>{{ factura.tgs     }}</td>
+              <td>{{ factura.adquira }}</td>
+              <td>{{ factura.factura_tgs }}</td>
+              <td>{{ factura.factura_adquira }}</td>
+              <td style="text-align: left;">{{ factura.estado.estado_facturacion }}</td>
+              <td style="color: #007bff;">{{ factura.usuarioActualiza.username }}</td>
+              <td>{{ factura.fecha_creacion | date:'dd/MM/yyyy'}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="cli-loader" *ngIf="loadingItem">
+          <mat-spinner style="margin-right: 20px" diameter="20"></mat-spinner>cargando...
+        </div>
+
+        <div
+          *ngIf="!loadingItem && listFacturas.length == 0"
+          class="cli-loader mt-5"
+          style="color: #f83434">
+          No hay Facturas para mostrar
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer pb-0 pt-3">
+      <pagination-controls
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        [responsive]="false"
+        (pageChange)="cambiarPagina($event)">
+      </pagination-controls>
+    </div>
+  </div>
+
+  <div class="cli-form-buttons" style="margin-top: 5%">
+    <button class="cli-btn btn-m btn-regresar"
+            type="submit" (click)="close()">
+            <mat-icon class="icon-18">keyboard_return</mat-icon> Regresar
+    </button>
+</div>

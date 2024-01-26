@@ -1,0 +1,177 @@
+<div class="cli-modalclose mt-2">
+  <mat-icon class="icon-20" matTooltip="Cerrar" (click)="dialogRef.close()">close</mat-icon>
+</div>
+
+<div class="cli-card fit-card">
+  <div class="cli-card-body">
+    <div class="modal-title c-male">Registro de certificaciones</div>
+    <div>
+      <!-- BUSCADOR POR FILTRO ---------------------------------------------------------------->
+      <form [formGroup]="certificacionesForm">
+        <div class="card" style="border-radius: 2px">
+          <div class="row g-3 card-body" style="padding: 10px">
+            <div class="cli-form-element col-f-4">
+              <label>Certificación</label>
+              <input
+                class="cli-input"
+                formControlName="certificacion"
+                type="text"/>
+            </div>
+
+            <div class="cli-form-element col-f-4">
+              <label>Orden de compra</label>
+              <select formControlName="ordenCompra" class="cli-input">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="oc.nombre" *ngFor="let oc of listOrdenCompraCombo">{{oc.nombre}}</option>
+              </select>
+            </div>
+
+            <div class="cli-form-element col-f-4">
+              <label>Proyectos</label>
+              <select formControlName="proyecto" class="cli-input">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="proy.codigoProyecto" *ngFor="let proy of listProyectos">{{proy.codigoProyecto}}</option>
+              </select>
+            </div>
+
+            <div class="cli-form-element col-f-4">
+              <label>Estado</label>
+              <select formControlName="estado" class="cli-input">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="estado.idEstado" *ngFor="let estado of listEstadoDetActa">{{estado.nombre}}</option>
+              </select>
+            </div>
+
+            <div class="cli-form-buttons" style="margin-top: 8px">
+              <button
+                type="submit"
+                class="cli-btn btn-m btn-regresar"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="limpiarFiltro()">
+                <mat-icon class="icon-18">rotate_left</mat-icon>Limpiar
+              </button>
+
+              <button
+                type="button"
+                class="cli-btn btn-blue-light"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="getAllCertificacionesFiltro()"
+                ><mat-icon class="icon-18">search</mat-icon>Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTON MODAL PARA CREAR GESTOR ----------------------------------------------------->
+        <div style="display: flex" class="mt-4 mb-1">
+          <button
+            class="cli-btn btn-turq"
+            [disabled]="certificacionesForm.invalid"
+            (click)="abrirModalCrearOactualizar()">
+            <mat-icon class="icon-18">add</mat-icon> Crear certificacion
+          </button>
+
+          <div class="flex-1"></div>
+          <div class="mt-2" style="color: #345df3; font-weight: 600">
+            Total : <span class="total">{{ listCertificacionesFiltro.length }} Certificaciones</span>
+          </div>
+        </div>
+      </form>
+
+      <!-- TABLA DE CERTIFICACIONES ------------------------------------------------------------------>
+      <div style="overflow: auto; min-height: 370px; color: #6c757d">
+        <table class="cli-table stripedtable underlinedtable">
+          <thead>
+            <tr class="bgc-blue-light c-white">
+              <th>Acción</th>
+              <th>ID</th>
+              <th style="min-width: 120px">Orden compra</th>
+              <th style="min-width: 150px">Certificación</th>
+              <th style="min-width: 150px">Proyecto(s)</th>
+              <th style="min-width: 100px">Estado factura</th>
+              <th>Total</th>
+              <th>Consumido</th>
+              <th>Disponible</th>
+              <th>Moneda</th>
+              <th style="min-width: 105px">Actualizado por:</th>
+              <th style="min-width: 92px" >Estado</th>
+              <th style="min-width: 100px">Fecha creación</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let cert of listCertificacionesFiltro | paginate: {
+                        itemsPerPage: pageSize,
+                        currentPage: page,
+                        totalItems: totalCerticaciones }">
+              <td>
+                <div class="moad-actions">
+                  <button
+                    matTooltip="Editar certificación"
+                    (click)="abrirModalCrearOactualizar(cert)"
+                    class="icon-btn btn-trans c-yellow"
+                    ><mat-icon class="icon-15">drive_file_rename_outline</mat-icon>
+                  </button>
+
+                  <button
+                    matTooltip="Eliminar certificación"
+                    (click)="eliminarCertificacion(cert)"
+                    class="icon-btn btn-trans c-red">
+                    <mat-icon class="icon-15">delete_forever</mat-icon>
+                  </button>
+
+                  <button
+                  matTooltip="Agregar factura"
+                  (click)="abrirModalCrearFactura(cert)"
+                  class="icon-btn btn-trans c-green_x"
+                  ><mat-icon class="icon-15">add</mat-icon>
+                </button>
+                </div>
+              </td>
+              <td>{{ cert.idCertificacion }}</td>
+              <td>{{ cert.ordenCompra.nro_orden }}</td>
+              <td style="text-align: left;">{{ cert.nro_certificacion }}</td>
+              <td style="text-align: left; min-width: 150px;">{{ cert.proyecto.codigo_proyecto }}</td>
+              <td>{{ cert.estadoFactura   }}</td>
+              <td>{{ cert.valorTotal      }}</td>
+              <td>{{ cert.valorUsado      }}</td>
+              <td>{{ cert.valorDisponible }}</td>
+              <td>{{ cert.moneda }}</td>
+              <td style="color: #007bff;">{{ cert.usuarioActualiza.usuario }}</td>
+              <td class="moad-module">
+                <mat-icon matTooltip="Activo" [ngClass]="{ 'c-green_x': cert.estado.estadoId == 1, 'c-red': cert.estado.estadoId != 1 }" class="icon-18">report</mat-icon>
+              </td>
+              <td>{{ cert.fecha_creacion | date:'dd/MM/yy HH:mm' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="cli-loader" *ngIf="loadingItem">
+          <mat-spinner style="margin-right: 20px" diameter="20"></mat-spinner>cargando...
+        </div>
+
+        <div
+          *ngIf="!loadingItem && listCertificacionesFiltro.length == 0"
+          class="cli-loader mt-5"
+          style="color: #f83434">
+          No hay certificaciones para mostrar
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer pb-0 pt-3">
+      <pagination-controls
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        [responsive]="false"
+        (pageChange)="cambiarPagina($event)">
+      </pagination-controls>
+    </div>
+  </div>
+
+  <div class="cli-form-buttons" style="margin-top: 5%">
+    <button class="cli-btn btn-m btn-regresar"
+            type="submit" (click)="close()">
+            <mat-icon class="icon-18">keyboard_return</mat-icon> Regresar
+    </button>
+</div>

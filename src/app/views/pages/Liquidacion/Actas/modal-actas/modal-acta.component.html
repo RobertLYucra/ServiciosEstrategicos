@@ -1,0 +1,323 @@
+<div class="cli-modalclose">
+  <mat-icon class="icon-20" matTooltip="Cerrar" (click)="dialogRef.close()">close</mat-icon>
+</div>
+
+<div class="cli-form mt-3">
+  <div class="cli-form-title c-male mt-3">{{ "Crear" }} acta</div>
+
+  <div class="cli-content">
+    <div class="cli-card-body; padding: none">
+      <div>
+        <ul class="tabs-container">
+          <li (click)="onTabClick('manual')"   [class.active]="activeTab == 'manual'"   class="tab-link form-buttons"><mat-icon class="icon-13" style="margin-right: 4px;">flip_camera_android</mat-icon>Manual</li>
+          <li (click)="onTabClick('importar')" [class.active]="activeTab == 'importar'" class="tab-link form-buttons"><mat-icon class="icon-13" style="margin-right: 4px;">update_disabled</mat-icon>Importar</li>
+        </ul>
+      </div>
+
+      <form class="row g-3" [formGroup]="actasForm">
+      <div class="card" style="border: none" *ngIf="activeTab == 'manual'">
+          <div class="cli-form newvac-wrapper">
+            <div class="chart-draw">
+              <div class="pr-subtitle mt-2">Datos Acta</div>
+              <div class="pr-section mb-1">
+                <div class="pr-module-container row g-3">
+                  <div class="cli-form-element col-f-4">
+                    <label>Gestor <small style="color: red">*</small></label>
+                    <select formControlName="idGestor" class="cli-input_x">
+                      <option [value]="0" disabled>-Seleccione-</option>
+                      <option [value]="gestor.id" *ngFor="let gestor of listGestoresCombo">{{ gestor.nombre }}</option>
+                    </select>
+                    <small class="form-text text-alert" *ngIf="campoNoValido('idGestor')">* Ingrese el Gestor es obligatorio</small>
+                  </div>
+
+                  <div class="cli-form-element col-f-4">
+                    <label>Proyecto <small style="color: red">*</small></label>
+                    <select formControlName="idProyecto" class="cli-input_x">
+                      <option [value]="0" disabled>-Seleccione-</option>
+                      <option [value]="proy.idProyecto" *ngFor="let proy of listProyectos">{{ proy.codigoProyecto }}</option>
+                    </select>
+                    <small class="form-text text-alert" *ngIf="campoNoValido('idProyecto')">* Ingrese el Proyecto es obligatorio</small>
+                  </div>
+
+                  <div class="cli-form-element col-f-4">
+                    <label>Subservicio <small style="color: red">*</small></label>
+                    <select formControlName="idSubservicio" class="cli-input_x">
+                      <option [value]="0" disabled>-Seleccione-</option>
+                      <option [value]="subs.id" *ngFor="let subs of listSubserviciosCombo">{{ subs.nombre }}</option>
+                    </select>
+                    <small class="form-text text-alert" *ngIf="campoNoValido('idSubservicio')">* Ingrese el Subservicio es obligatorio</small>
+                  </div>
+
+                  <div class="cli-form-element col-f-4">
+                      <label>Periodo <small style="color: red">*</small></label>
+                       <input
+                        type="month"
+                        class="cli-input_x"
+                        formControlName="periodo"/>
+                    <small class="form-text text-alert" *ngIf="campoNoValido('periodo')">* Ingrese el Periodo es obligatorio</small>
+                  </div>
+
+                  <div class="cli-form-element col-f-4">
+                    <label>Venta total</label>
+                    <input class="cli-input_x" formControlName="venta_total" type="text" />
+                  </div>
+
+                  <div class="cli-form-element col-f-4">
+                    <label>Enlace</label>
+                    <input class="cli-input_x" formControlName="enlaceActa" type="text" />
+                  </div>
+
+                  <div class="cli-form-element col-f-2">
+                    <label>Comentario acta</label>
+                    <textarea
+                      class="cli-input_x"
+                      style="background-image: none;border-color: #bdbdbd;font-size: 12px;"
+                      rows="1"
+                      placeholder="Escriba algún comentario del Acta..."
+                      formControlName="comentario"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+                <div class="pr-subtitle mt-1">Detalle Acta</div>
+                <div class="pr-section mb-1">
+                  <div class="pr-module-container cli-card fit-card ">
+                        <div class="cli-form newvac-wrapper" class="row g-3">
+                          <ng-container formGroupName="detalleActaParams">
+                            <div class="cli-form-element col-f-4">
+                              <label>Analista <small style="color: red">*</small></label>
+                              <input
+                                class="cli-input"
+                                formControlName="analista"
+                                type="text"/>
+                                <small class="form-text text-alert" *ngIf="campoDetalleNoValido('analista')">* Ingrese el Analista es obligatorio</small>
+                            </div>
+
+                            <div class="cli-form-element col-f-4">
+                              <label>Perfil <small style="color: red">*</small></label>
+                              <input
+                                class="cli-input"
+                                formControlName="perfil"
+                                type="text"/>
+                                <small class="form-text text-alert" *ngIf="campoDetalleNoValido('perfil')">* Ingrese el Perfil es obligatorio</small>
+                            </div>
+
+                            <div class="cli-form-element col-f-4">
+                              <label>Precio x Unid.</label>
+                              <input
+                                class="cli-input"
+                                formControlName="precio_unidad"
+                                type="number"/>
+                            </div>
+
+                            <div class="cli-form-element col-f-4">
+                              <label>Cantidad</label>
+                              <input
+                                class="cli-input"
+                                formControlName="cantidad"
+                                type="number"/>
+                            </div>
+
+                            <div class="cli-form-element col-f-4">
+                              <label>Venta total <small style="color: red">*</small></label>
+                              <input
+                                class="cli-input"
+                                formControlName="precio_total"
+                                type="number"/>
+                                <small class="form-text text-alert" *ngIf="campoDetalleNoValido('precio_total')">* Ingrese la Venta total es obligatorio</small>
+                            </div>
+
+                            <div class="cli-form-element col-f-4">
+                              <label>Unid. Moneda</label>
+                              <select formControlName="moneda" class="cli-input">
+                                <option [value]="0" disabled>-Seleccione-</option>
+                                <option value='PEN'  >PEN</option>
+                                <option value='Otros'>Otros</option>
+                              </select>
+                            </div>
+
+                            <div class="cli-form-element col-f-2"           >
+                              <label>Observación</label>
+                              <textarea
+                                class="cli-input"
+                                style="background-image: none; border-color: #bdbdbd; font-size: 14px; font-size: 12px;"
+                                rows="1"
+                                placeholder="Escriba alguna observación del detalle acta..."
+                                formControlName="observacion"
+                              ></textarea>
+                            </div>
+
+                            <!-- <div class="cli-form-element col-f-2"           >
+                              <label>Comentario</label>
+                              <textarea
+                                class="cli-input"
+                                style="background-image: none; border-color: #bdbdbd; font-size: 14px; font-size: 12px;"
+                                rows="1"
+                                placeholder="Escriba algún comentario del detalle acta..."
+                                formControlName="comentarioDet"
+                              ></textarea>
+                            </div> -->
+                        </ng-container>
+                      </div>
+                  </div>
+                </div>
+            </div>
+
+            <!-- BOTONES CREAR MANUAL -->
+            <div class="cli-form-buttons">
+              <button
+                class="cli-btn btn-m btn-regresar"
+                type="submit"
+                (click)="close()">
+                <mat-icon class="icon-18">keyboard_return</mat-icon> Regresar
+              </button>
+              <button
+                class="cli-btn btn-m btn-turq"
+                [disabled]="actasForm.invalid"
+                (click)="crearAgrupacionConActa()">
+                <mat-icon class="icon-18">save</mat-icon>Crear
+              </button>
+            </div>
+          </div>
+      </div>
+
+      <div class="card" style="min-height: 490px; border: none;" *ngIf="activeTab == 'importar'">
+        <div style="display: flex" class="mt-4 mb-1">
+          <input type="file" class="cli-import"
+          accept=".xlsx, .xls, .csv"
+          formControlName="import"
+          (change)="readExcell($event)">
+        </div>
+
+        <ng-container *ngIf="!loading && listDetActas.length > 0">
+          <div class="chart-draw">
+            <div class="pr-subtitle mt-2">Datos Acta</div>
+            <div class="pr-section mb-1">
+              <div class="pr-module-container row g-3">
+                <div class="cli-form-element col-f-4">
+                  <label>Gestor <small style="color: red">*</small></label>
+                  <select formControlName="idGestor" class="cli-input_x">
+                    <option [value]="0" disabled>-Seleccione-</option>
+                    <option [value]="gestor.id" *ngFor="let gestor of listGestoresCombo">{{ gestor.nombre }}</option>
+                  </select>
+                  <small class="form-text text-alert" *ngIf="campoNoValido('idGestor')">* Ingrese el Gestor es obligatorio</small>
+                </div>
+
+                <div class="cli-form-element col-f-4">
+                  <label>Proyecto <small style="color: red">*</small></label>
+                  <select formControlName="idProyecto" class="cli-input_x">
+                    <option [value]="0" disabled>-Seleccione-</option>
+                    <option [value]="proy.idProyecto" *ngFor="let proy of listProyectos">{{ proy.codigoProyecto }}</option>
+                  </select>
+                  <small class="form-text text-alert" *ngIf="campoNoValido('idProyecto')">* Ingrese el Proyecto es obligatorio</small>
+                </div>
+
+                <div class="cli-form-element col-f-4">
+                  <label>Subservicio <small style="color: red">*</small></label>
+                  <select formControlName="idSubservicio" class="cli-input_x">
+                    <option [value]="0" disabled>-Seleccione-</option>
+                    <option [value]="subs.id" *ngFor="let subs of listSubserviciosCombo">{{ subs.nombre }}</option>
+                  </select>
+                  <small class="form-text text-alert" *ngIf="campoNoValido('idSubservicio')">* Ingrese el Subservicio es obligatorio</small>
+                </div>
+
+                <div class="cli-form-element col-f-4">
+                    <label>Periodo <small style="color: red">*</small></label>
+                     <input
+                      type="month"
+                      class="cli-input_x"
+                      formControlName="periodo"/>
+                  <small class="form-text text-alert" *ngIf="campoNoValido('periodo')">* Ingrese el Periodo es obligatorio</small>
+                </div>
+
+                <div class="cli-form-element col-f-4">
+                  <label>Venta total</label>
+                  <input class="cli-input_x" formControlName="venta_total" type="text" />
+                </div>
+
+                <div class="cli-form-element col-f-4">
+                  <label>Enlace</label>
+                  <input class="cli-input_x" formControlName="enlaceActa" type="text" />
+                </div>
+
+                <div class="cli-form-element col-f-2">
+                  <label>Comentario</label>
+                  <textarea
+                    class="cli-input_x"
+                    style="background-image: none;border-color: #bdbdbd;font-size: 12px;"
+                    rows="1"
+                    placeholder="Escriba algún comentario del Sub Acta..."
+                    formControlName="comentario"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pr-subtitle mt-1" >Detalle Acta</div>
+          <div class="pr-section" >
+            <div class="pr-module-container mb-2">
+              <div style="display: flex">
+                <div class="flex-1"></div>
+                <div class="mt-1" style="color: #345df3; font-weight: 400" >
+                  Total : <span class="total">{{ listDetActas.length }} Actas detalle</span>
+                </div>
+              </div>
+
+              <div style="overflow: auto; min-height: 167px; max-height: 167px; color:#6c757d;" >
+                <table class="cli-table_x stripedtable underlinedtable"  >
+                  <thead>
+                    <tr class="bgc-blue c-white">
+                      <th style="min-width: 155px;">Nombre</th>
+                      <th style="min-width: 100px;">Perfil</th>
+                      <th style="min-width: 80px;" >Precio unid.</th>
+                      <th>Cantidad</th>
+                      <th>Total   </th>
+                      <th style="min-width: 100px;">Categoría 1</th>
+                      <th style="min-width: 270px;">Categoría 2</th>
+                      <th style="min-width: 120px;">Observaciones</th>
+                      <th style="min-width: 175px;">Comentario</th>
+                      <th>Unidad</th>
+                    </tr>
+                  </thead>
+                  <tbody style="background: #e9eae8">
+                    <tr *ngFor="let detalle of listDetActas; let i = index">
+                      <td style="text-align: left; padding-left: 4px;">{{detalle.nombre}}</td>
+                      <td>{{detalle.perfil        }}</td>
+                      <td style="text-align: end;">{{ detalle.precio_unidad| number : '1.0-2'}}</td>
+                      <td style="text-align: end;">{{ detalle.unidades     | number : '1.0-2'}}</td>
+                      <td style="text-align: end;">{{ detalle.precioTotal  | number : '1.0-2'}}</td>
+                      <td>{{ detalle.categoria1   }}</td>
+                      <td>{{ detalle.categoria2   }}</td>
+                      <td>{{ detalle.observacion  }}</td>
+                      <td>{{ detalle.comentario   }}</td>
+                      <td>{{ detalle.unidad       }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTONES CREAR IMPORT -->
+          <div class="cli-form-buttons">
+            <button
+              class="cli-btn btn-m btn-regresar"
+              type="submit"
+              (click)="close()">
+              <mat-icon class="icon-18">keyboard_return</mat-icon> Cancelar
+            </button>
+            <button
+              class="cli-btn btn-m btn-turq"
+              (click)="guardarActaImportado()">
+              <mat-icon class="icon-18">save</mat-icon>Guardar
+            </button>
+          </div>
+        </ng-container>
+
+      </div>
+    </form>
+    </div>
+  </div>
+</div>

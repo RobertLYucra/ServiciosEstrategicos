@@ -1,0 +1,152 @@
+<div class="cli-modalclose mt-2">
+  <mat-icon class="icon-20" matTooltip="Cerrar" (click)="dialogRef.close()">close</mat-icon>
+</div>
+
+<div class="cli-card fit-card">
+  <div class="cli-card-body">
+    <div class="modal-title c-male">Registro de Líderes</div>
+    <div>
+      <!-- BUSCADOR POR FILTRO ---------------------------------------------------------------->
+      <form [formGroup]="liderForm">
+        <div class="card" style="border-radius: 2px">
+          <div class="row g-3 card-body" style="padding: 10px">
+            <div class="cli-form-element col-f-3">
+              <label>Líder</label>
+              <select formControlName="lider" class="cli-input">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="lider.lider" *ngFor="let lider of listLiderCombo">{{lider.lider}}</option>
+              </select>
+            </div>
+
+            <div class="cli-form-element col-f-3">
+              <label>Proyecto</label>
+              <select formControlName="proyecto" class="cli-input">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="proy.codigoProyecto" *ngFor="let proy of listProyectos">{{proy.codigoProyecto}}</option>
+              </select>
+            </div>
+
+            <div class="cli-form-element col-f-3">
+              <label>Estado</label>
+              <select formControlName="estado" class="cli-input">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+              </select>
+            </div>
+
+            <div class="cli-form-buttons" style="margin-top: 8px">
+              <button
+                type="submit"
+                class="cli-btn btn-m btn-regresar"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="limpiarFiltro()">
+                <mat-icon class="icon-18">rotate_left</mat-icon>Limpiar
+              </button>
+
+              <button
+                type="button"
+                class="cli-btn btn-blue-light"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="getAllLiderFilter()"
+                ><mat-icon class="icon-18">search</mat-icon>
+                Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTON MODAL PARA CREAR lider ----------------------------------------------------->
+        <div style="display: flex" class="mt-4 mb-1">
+          <button
+            class="cli-btn btn-m btn-turq"
+            [disabled]="liderForm.invalid"
+            (click)="abrirModalCrearOactualizar()">
+            <mat-icon class="icon-18">add</mat-icon> Crear líder
+          </button>
+
+          <div class="flex-1"></div>
+          <div class="mt-2" style="color: #345df3; font-weight: 600">
+            Total : <span class="total">{{ listLideres.length }} Líderes</span>
+          </div>
+        </div>
+      </form>
+
+      <!-- TABLA DE LIDERES ------------------------------------------------------------------>
+      <div style="overflow: auto; min-height: 208px; color: #6c757d">
+        <table class="cli-table stripedtable underlinedtable">
+          <thead>
+            <tr class="bgc-blue-light c-white">
+              <th class="w50">Acción</th>
+              <th style="min-width: 150px">Líder.</th>
+              <th style="min-width: 150px">Proyecto(s).</th>
+              <th style="min-width: 160px">Correo</th>
+              <th style="min-width: 240px">Descripción</th>
+              <th style="min-width: 108px">Actualizado por</th>
+              <th style="min-width: 92px" >Estado</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let lider of listLideres | paginate: {
+                        itemsPerPage: pageSize,
+                        currentPage: page,
+                        totalItems: totalLideres }">
+              <td>
+                <div class="moad-actions">
+                  <button
+                    matTooltip="Editar lider"
+                    (click)="abrirModalCrearOactualizar(lider)"
+                    class="icon-btn btn-trans c-yellow"
+                    ><mat-icon class="icon-15">drive_file_rename_outline</mat-icon>
+                  </button>
+
+                  <button
+                    matTooltip="Eliminar lider"
+                    (click)="eliminarLider(lider)"
+                    class="icon-btn btn-trans c-red">
+                    <mat-icon class="icon-15">delete_forever</mat-icon>
+                  </button>
+                </div>
+              </td>
+              <td style="text-align: left"> {{ lider.lider }}</td>
+              <td style="text-align: left; min-width: 310px;">{{ lider.proyectos | uppercase}}</td>
+              <td style="text-align: left;">{{ lider.correo }}</td>
+              <td style="min-width: 240px;">{{ lider.descripcion }}</td>
+              <td style="color: #007bff;">{{ lider.usuarioActualiza.username }}</td>
+              <td class="moad-module">
+                <mat-icon [ngClass]="{ 'c-green_x': lider.estado.estadoId == 1, 'c-red': lider.estado.estadoId != 1 }" class="icon-18">report</mat-icon>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="cli-loader" *ngIf="loadingItem">
+          <mat-spinner style="margin-right: 20px" diameter="20"></mat-spinner>cargando...
+        </div>
+
+        <div
+          *ngIf="!loadingItem && listLideres.length == 0"
+          class="cli-loader mt-5"
+          style="color: #f83434">
+          No hay líderes para mostrar
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer pb-0 pt-3">
+      <pagination-controls
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        [responsive]="false"
+        (pageChange)="cambiarPagina($event)">
+      </pagination-controls>
+    </div>
+  </div>
+
+  <div class="cli-form-buttons">
+    <button class="cli-btn btn-m btn-regresar"
+            type="submit" (click)="close()">
+            <mat-icon class="icon-18">keyboard_return</mat-icon> Regresar
+    </button>
+</div>

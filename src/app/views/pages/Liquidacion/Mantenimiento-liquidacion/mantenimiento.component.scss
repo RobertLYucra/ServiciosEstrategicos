@@ -1,0 +1,28 @@
+.options{
+  color: #fff!important;
+  cursor: pointer;
+}
+
+.option-module {
+  display: block;
+  border: 1px solid #0daef4;
+  margin: 15px 0;
+  border-radius: 4px;
+  cursor: pointer;
+
+  margin: 20px;
+  text-decoration: none;
+}
+
+ .option-module-title {
+  min-height: 42px;
+  align-items: center;
+  display: flex;
+  color: #0daef4
+}
+
+.description-module {
+  min-height: 42px;
+  align-items: center;
+  display: flex;
+}

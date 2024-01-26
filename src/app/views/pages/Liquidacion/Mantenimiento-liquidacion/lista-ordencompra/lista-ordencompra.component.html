@@ -1,0 +1,187 @@
+<div class="cli-modalclose mt-2">
+  <mat-icon class="icon-20" matTooltip="Cerrar" (click)="dialogRef.close()">close</mat-icon>
+</div>
+
+<div class="cli-card fit-card">
+  <div class="cli-card-body">
+    <div class="modal-title c-male">Registro de órdenes de compra</div>
+    <div>
+      <!-- BUSCADOR POR FILTRO ---------------------------------------------------------------->
+      <form [formGroup]="ordencompraForm">
+        <div class="card" style="border-radius: 2px">
+          <div class="row g-3 card-body" style="padding: 10px">
+            <div class="cli-form-element col-f-4">
+              <label>Orden de compra</label>
+              <select formControlName="ordenCompra" class="cli-input">
+                <option [value]="0" disabled>-Seleccione-</option>
+                <option [value]="oc.nombre" *ngFor="let oc of listOrdenCompraCombo">{{oc.nombre}}</option>
+              </select>
+            </div>
+
+            <div class="cli-form-element col-f-4">
+              <label>Certificación</label>
+              <input
+                class="cli-input"
+                formControlName="certificacion"
+                type="text"/>
+            </div>
+
+            <div class="cli-form-element col-f-4">
+              <label>Monto</label>
+              <input
+                class="cli-input"
+                formControlName="monto"
+                type="text"/>
+            </div>
+
+            <div class="cli-form-element col-f-4">
+              <label>Estado</label>
+              <select formControlName="estado" class="cli-input">
+                <option [value]="10" disabled>-Seleccione-</option>
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+              </select>
+            </div>
+
+            <div class="cli-form-buttons" style="margin-top: 8px">
+              <button
+                type="submit"
+                class="cli-btn btn-m btn-regresar"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="limpiarFiltro()">
+                <mat-icon class="icon-18">rotate_left</mat-icon>
+                Limpiar
+              </button>
+
+              <button
+                type="button"
+                class="cli-btn btn-blue-light"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="getAllOrdenCompraFiltro()"
+                ><mat-icon class="icon-18">search</mat-icon>
+                Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTON MODAL PARA CREAR ORDEN DE COMPRA ----------------------------------------------------->
+        <div style="display: flex" class="mt-4 mb-1">
+          <button
+            class="cli-btn btn-turq"
+            [disabled]="ordencompraForm.invalid"
+            (click)="abrirModalCrearOactualizar()">
+            <mat-icon class="icon-18">add</mat-icon> Crear orden de compra
+          </button>
+
+          <div class="flex-1"></div>
+          <div class="mt-2" style="color: #345df3; font-weight: 600">
+            Total : <span class="total">{{ listOrdenFiltro.length }} órdenes de compra</span>
+          </div>
+        </div>
+      </form>
+
+      <!-- TABLA DE ORDENES DE COMPRA ------------------------------------------------------------------>
+      <div style="overflow: auto; min-height: 250px; color: #6c757d">
+        <table class="cli-table stripedtable underlinedtable">
+          <thead>
+            <tr class="bgc-blue-light c-white">
+              <th>Acción</th>
+              <th style="min-width: 45px"  >ID OC</th>
+              <th style="min-width: 150px" >Orden de compra.</th>
+              <th style="min-width: 250px" >Certificaciones</th>
+              <th style="min-width: 250px" >Proyecto(s)</th>
+              <th style="min-width: 118px;">Monto Total</th>
+              <th style="min-width: 118px;">Monto Certificado</th>
+              <th style="min-width: 118px;">Monto Usado</th>
+              <th style="min-width: 118px;">Monto Disponible</th>
+              <th style="min-width: 90px"  >Modena</th>
+              <th style="min-width: 106px" >Factura</th>
+              <th style="min-width: 106px" >Estado Factura</th>
+              <th style="min-width: 90px"  >Estado</th>
+              <th style="min-width: 105px" >Actualizado por:</th>
+              <th style="min-width: 106px" >Fecha Creación</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let orden of listOrdenFiltro | paginate: {
+                        itemsPerPage: pageSize,
+                        currentPage: page,
+                        totalItems: totalOrdencompra }">
+              <td>
+                <div class="moad-actions">
+                  <button
+                    matTooltip="Editar orden de compra"
+                    (click)="abrirModalCrearOactualizar(orden)"
+                    class="icon-btn btn-trans c-yellow"
+                    ><mat-icon class="icon-15">drive_file_rename_outline</mat-icon>
+                  </button>
+
+                  <button
+                    matTooltip="Eliminar orden de compra"
+                    (click)="eliminarOrdenCompra(orden)"
+                    class="icon-btn btn-trans c-red">
+                    <mat-icon class="icon-15">delete_forever</mat-icon>
+                  </button>
+                </div>
+              </td>
+              <td style="font-weight: 600">{{ orden.idOrden   }}</td>
+              <td style="text-align: left">{{ orden.nro_orden }}</td>
+              <td>{{ orden.certificacions  }}</td>
+              <td>{{ orden.proyectos       }}</td>
+              <td>{{ orden.monto            | number : "1.0-2"}}</td>
+              <td>{{ orden.montoCertificado | number : "1.0-2"}}</td>
+              <td>{{ orden.montoUsado       | number : "1.0-2"}}</td>
+              <td>{{ orden.montoDisponible  | number : "1.0-2"}}</td>
+              <td>{{ orden.moneda          }}</td>
+              <td>{{ orden.factura         }}</td>
+              <td>{{ orden.estadoFactura   }}</td>
+              <td class="moad-module">
+                <mat-icon [ngClass]="{ 'c-green_x': orden.estado.estadoId == 1, 'c-red': orden.estado.estadoId != 1 }" class="icon-18">report</mat-icon>
+              </td>
+              <td style="color:#007bff">{{ orden.usuarioActualiza.usuario }}</td>
+              <td>{{ orden.fecha_creacion | date: 'dd/MM/YYYY' }}</td>
+              <!-- <td>
+                <div class="moad-actions">
+                  <button
+                  (click)="abrirModalCrearFactura(orden)"
+                    matTooltip="Agregar factura"
+                    class="icon-btn btn-trans c-green_x"
+                    ><mat-icon class="icon-15">add</mat-icon>
+                  </button>
+                </div>
+              </td> -->
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="cli-loader" *ngIf="loadingItem">
+          <mat-spinner style="margin-right: 20px" diameter="20"></mat-spinner>cargando...
+        </div>
+
+        <div
+          *ngIf="!loadingItem && listOrdenFiltro.length == 0"
+          class="cli-loader mt-5"
+          style="color: #f83434">
+          No hay Orden de compra para mostrar
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer pb-0 pt-3">
+      <pagination-controls
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        [responsive]="false"
+        (pageChange)="cambiarPagina($event)">
+      </pagination-controls>
+    </div>
+  </div>
+
+  <div class="cli-form-buttons" style="margin-top: 5%">
+    <button class="cli-btn btn-m btn-regresar"
+            type="submit" (click)="close()">
+            <mat-icon class="icon-18">keyboard_return</mat-icon> Regresar
+    </button>
+</div>

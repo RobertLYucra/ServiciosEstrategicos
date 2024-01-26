@@ -1,0 +1,129 @@
+<div class="cli-modalclose mt-2">
+  <mat-icon class="icon-20" matTooltip="Cerrar" (click)="dialogRef.close()">close</mat-icon>
+</div>
+
+<div class="cli-card fit-card">
+  <div class="cli-card-body">
+    <div class="modal-title c-male">Registro de Estados</div>
+    <div>
+      <!-- BUSCADOR POR FILTRO ---------------------------------------------------------------->
+      <form [formGroup]="estadosForm">
+        <!-- <div class="card" style="border-radius: 2px">
+          <div class="row g-3 card-body" style="padding: 10px">
+            <div class="cli-form-element col-f-3">
+              <label>Estado</label>
+              <input
+                class="cli-input"
+                formControlName="jefatura"
+                type="text"/>
+            </div>
+
+            <div class="cli-form-buttons" style="margin-top: 8px">
+              <button
+                type="submit"
+                class="cli-btn btn-m btn-regresar"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="limpiarFiltro()">
+                <mat-icon class="icon-18">rotate_left</mat-icon>Limpiar
+              </button>
+
+              <button
+                type="button"
+                class="cli-btn btn-blue-light"
+                style="border-radius: 2px; padding: 0.225rem 0.75rem"
+                (click)="getAllEstadosActa()"
+                ><mat-icon class="icon-18">search</mat-icon>
+                Buscar
+              </button>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- BOTON MODAL PARA CREAR ESTADOS ----------------------------------------------------->
+        <div style="display: flex" class="mt-4 mb-1">
+          <button
+            class="cli-btn btn-turq"
+            [disabled]="estadosForm.invalid"
+            (click)="abrirModalCrearOactualizar()">
+            <mat-icon class="icon-18">add</mat-icon> Crear estado
+          </button>
+
+          <div class="flex-1"></div>
+          <div class="mt-2" style="color: #345df3; font-weight: 600">
+            Total : <span class="total">{{ listEstados.length }} Estados</span>
+          </div>
+        </div>
+      </form>
+
+      <!-- TABLA DE ESTADOS ------------------------------------------------------------------>
+      <div style="overflow: auto; min-height: 188px; color: #6c757d">
+        <table class="cli-table stripedtable underlinedtable">
+          <thead>
+            <tr class="bgc-blue-light c-white">
+              <th class="w50">Acción</th>
+              <th style="min-width: 150px">Estado</th>
+              <th style="min-width: 150px">Descripción</th>
+              <th style="min-width: 100px">Actualizado por:</th>
+              <th style="min-width: 92px" >Estado</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let estados of listEstados | paginate: {
+                        itemsPerPage: pageSize,
+                        currentPage: page,
+                        totalItems: totalEstados }">
+              <td>
+                <div class="moad-actions">
+                  <button
+                    (click)="abrirModalCrearOactualizar(estados)"
+                    class="icon-btn btn-trans c-yellow"
+                    ><mat-icon class="icon-15">drive_file_rename_outline</mat-icon>
+                  </button>
+
+                  <button
+                    (click)="eliminarEstado(estados)"
+                    class="icon-btn btn-trans c-red">
+                    <mat-icon class="icon-15">delete_forever</mat-icon>
+                  </button>
+                </div>
+              </td>
+              <td style="text-align: left"> {{ estados.nombre }}</td>
+              <td style="text-align: left; min-width: 250px;">{{ estados.descripcion }}</td>
+              <td style="color: #007bff;">{{ estados.usuarioActualiza.username }}</td>
+              <td class="moad-module">
+                <mat-icon [ngClass]="{ 'c-green_x': estados.eliminacion_logica == 1, 'c-red': estados.eliminacion_logica != 1 }" class="icon-18">report</mat-icon>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="cli-loader" *ngIf="loadingItem">
+          <mat-spinner style="margin-right: 20px" diameter="20"></mat-spinner>cargando...
+        </div>
+
+        <div
+          *ngIf="!loadingItem && listEstados.length == 0"
+          class="cli-loader mt-5"
+          style="color: #f83434">
+          No hay Estados para mostrar
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer pb-0 pt-3">
+      <pagination-controls
+        previousLabel="Anterior"
+        nextLabel="Siguiente"
+        [responsive]="false"
+        (pageChange)="cambiarPagina($event)">
+      </pagination-controls>
+    </div>
+  </div>
+
+  <div class="cli-form-buttons" style="margin-top: 5%">
+    <button class="cli-btn btn-m btn-regresar"
+            type="submit" (click)="close()">
+            <mat-icon class="icon-18">keyboard_return</mat-icon> Regresar
+    </button>
+</div>
